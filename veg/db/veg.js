@@ -2,25 +2,38 @@ const model = require("../models/veg");
 var settings = require("../db/settings");
 
 exports.save = function (data, callback) {
-  model.Vacations(data).save(function (err, inserted) {
+  new model.VegSchema(data).save((err, inserted) => {
     callback(err, inserted);
   });
 };
 
-exports.saveMany = function (rows, callback) {
-  model.Vacations.insertMany(rows, function (err, docs) {
+exports.update = (criteria, doc, callback) => {
+  model.VegSchema.updateOne(criteria, doc, { upsert: true }, (err, data) => {
+    callback(err, data);
+  });
+};
+
+exports.select = (criteria, options, callback) => {
+  model.VegSchema.find(criteria, (err, data) => {
+    callback(err, data);
+  })
+    .select(options.fields)
+    .skip(options.offset)
+    .limit(options.limit);
+};
+
+exports.delete = (criteria, callback) => {
+  model.VegSchema.deleteOne(
+    criteria,
+    (err,
+    (data) => {
+      callback(err, data);
+    })
+  );
+};
+
+exports.saveMany = (rows, callback) => {
+  model.VegSchema.insertMany(rows, (err, docs) => {
     callback(err, docs);
-  });
-};
-
-exports.update = function (criteria, doc, callback) {
-  model.Vacations.updateMany(criteria, doc, function (err, data) {
-    callback(err, data);
-  });
-};
-
-exports.select = function (criteria, callback) {
-  model.Vacations.find(criteria, function (err, data) {
-    callback(err, data);
   });
 };
